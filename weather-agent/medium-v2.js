@@ -162,3 +162,6 @@ async function main() {
 }
 
 main().catch(console.error);
+
+// --- How to run the code ---
+// node medium-v2.js "What's the weather in Dhaka?"

@@ -7,7 +7,8 @@ A collection of weather agents built with OpenAI's GPT-4o-mini, demonstrating di
 - **`basic.js`** - Manual step-by-step learning agent
 - **`medium.js`** - Automated functional agent
 - **`medium-v2.js`** - Production-ready class-based agent
-- **`COMPARISON.md`** - Detailed comparison of all versions
+- **`advanced-working.js`** - Advanced agent with LangChain.js framework
+- **`web-interface.js`** - Web interface for the advanced agent
 
 ## 🎯 Quick Start
 
@@ -31,6 +32,21 @@ node medium.js "What's the weather in Dhaka?"
 node medium-v2.js "What's the weather in Dhaka?"
 ```
 
+### For Advanced Features (LangChain.js)
+
+```bash
+node advanced-working.js "What's the weather in Dhaka?"
+node advanced-working.js "Convert 15°C to Fahrenheit"
+node advanced-working.js "Check weather alerts for Chittagong"
+```
+
+### For Web Interface
+
+```bash
+node web-interface.js
+# Then open http://localhost:3000 in your browser
+```
+
 ## 🏗️ Architecture Overview
 
 All agents follow the same structured thinking process:
@@ -48,6 +64,7 @@ All agents follow the same structured thinking process:
 | **Basic.js**     | Learning   | Beginners    | Manual workflow, step-by-step        |
 | **Medium.js**    | Practice   | Intermediate | Automated loop, basic error handling |
 | **Medium-v2.js** | Production | Advanced     | Class-based, robust error handling   |
+| **Advanced**     | Framework  | Expert       | LangChain.js, multiple tools, memory |
 
 ## 🚀 Features
 
@@ -57,6 +74,66 @@ All agents follow the same structured thinking process:
 - 🛡️ **Error Handling**: Robust error handling with retry mechanisms
 - 📊 **Beautiful Logging**: Clear, emoji-rich console output
 - 🔄 **Iteration Control**: Prevents infinite loops with max iterations
+
+## Framework (Advanced)
+
+The advanced agents use LangChain.js framework and demonstrate different complexity levels:
+
+### 📊 Advanced Files Complexity Analysis:
+
+#### 1. **`advanced.js`** - Most Complex (LangChain Agent Framework)
+
+- **Complexity**: ⭐⭐⭐⭐⭐ (Highest)
+- **Features**:
+  - Full LangChain.js agent with tools
+  - OpenAI Functions agent
+  - Complex prompt templates
+  - Advanced error handling
+- **Status**: ✅ **Working** (Fixed with simplified approach)
+
+#### 2. **`advanced-simple.js`** - Complex (Simplified LangChain)
+
+- **Complexity**: ⭐⭐⭐⭐ (High)
+- **Features**:
+  - LangChain.js agent with tools
+  - Simplified setup
+  - Memory management
+- **Status**: ✅ **Working** (Fixed with simplified approach)
+
+#### 3. **`advanced-working.js`** - Medium Complex (Working Solution)
+
+- **Complexity**: ⭐⭐⭐ (Medium)
+- **Features**:
+  - LangChain.js integration
+  - Pattern matching for NLP
+  - Multiple tools (weather, conversion, alerts)
+  - Conversation memory
+- **Status**: ✅ **Working perfectly**
+
+#### 4. **`web-interface.js`** - Most Complex (Web App)
+
+- **Complexity**: ⭐⭐⭐⭐⭐ (Highest)
+- **Features**:
+  - Full web interface with Express.js
+  - Real-time chat interface
+  - Beautiful UI with CSS
+  - REST API endpoints
+- **Status**: ✅ **Working** (but uses same agent logic as advanced.js)
+
+### 🎯 **Recommended Learning Path:**
+
+```
+basic.js → medium.js → medium-v2.js → advanced-working.js → web-interface.js
+```
+
+### 💡 **Recommendation:**
+
+**All advanced agents are now working!** Choose based on your needs:
+
+- **`advanced-working.js`** - Best for learning and production use
+- **`advanced.js`** - Most complex with full LangChain integration
+- **`advanced-simple.js`** - Simplified version for easier understanding
+- **`web-interface.js`** - For web-based interactions
 
 ## Architecture
 
@@ -165,11 +242,21 @@ node medium-v2.js "What's the weather in Rangpur?"
 - **logState()**: Beautiful logging with state-specific emojis
 - **handleToolCall()**: Executes tools and handles errors
 
+### Advanced Agent (LangChain.js)
+
+- LangChain.js framework integration
+- Multiple weather tools (weather, conversion, alerts)
+- Conversation memory
+- Pattern matching for natural language processing
+- Web interface support
+
 ## Tools
 
 Currently supports:
 
 - `getWeather(location)`: Returns weather for a given location
+- `convertTemperature(value, fromUnit, toUnit)`: Converts between Celsius, Fahrenheit, and Kelvin
+- `checkWeatherAlerts(location)`: Checks for weather alerts and warnings
 
 ## Role Types Used
 
