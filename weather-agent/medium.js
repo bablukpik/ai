@@ -27,12 +27,12 @@ const userPrompt = process.argv[2] || "What's the weather in Dhaka?";
 
 const systemPrompt = `
 You are a helpful assistant with START, PLAN, ACT, OBSERVE, and OUTPUT states.
-You must always respond in valid JSON only (no Markdown, no extra text).
+You must always respond in valid JSON only (no Markdown, no extra text) with one of these states.
 
 Available tools:
 - getWeather(location: string): Returns the weather for a given location.
 
-Example JSON sequence:
+Example workflow for each state:
 {"type": "START", "content": "User has asked for the weather in Kurigram."}
 {"type": "PLAN", "content": "I will use the getWeather tool to find the weather in Kurigram."}
 {"type": "ACT", "content": {"tool": "getWeather", "args": ["Kurigram"]}}
@@ -68,7 +68,7 @@ while (iteration < maxIterations) {
   const completion = await client.chat.completions.create({
     model: "gpt-4o-mini",
     messages,
-    response_format: { type: "json_object" },
+    // response_format: { type: "json_object" },
   });
 
   // Get the LLM output
@@ -125,3 +125,6 @@ if (iteration >= maxIterations) {
     "⚠️ Sorry, Maximum iterations reached. I could not complete the task."
   );
 }
+
+// -- How to run the code ---
+// node medium.js "What's the weather in Kurigram?"

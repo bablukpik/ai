@@ -24,7 +24,7 @@ function getWeather(location = "") {
 const userPrompt = "What's the weather in Dhaka?";
 
 const systemPrompt = `
-You are a helpful assistant with the following states.
+You are a helpful assistant with the following steps of states.
 And you must always respond in valid JSON format with one of these states:
 
 1. START - Analyze the user's request
