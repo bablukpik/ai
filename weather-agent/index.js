@@ -5,7 +5,7 @@ const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-// Tools
+// --- Tools ---
 function getWeather(location = "") {
   // Could integrate with OpenWeatherMap, WeatherAPI, etc.
   // For now, here is some mock data for testing
@@ -22,12 +22,12 @@ function getWeather(location = "") {
 // Available tools
 const tools = { getWeather };
 
-const userPrompt = "What's the weather in Dhaka?";
+// --- Prompts ---
+const userPrompt = process.argv[2] || "What's the weather in Dhaka?";
 
 const systemPrompt = `
 You are a helpful assistant with START, PLAN, ACT, OBSERVE, and OUTPUT states.
-You must always respond in valid JSON only.
-Do not include extra text or explanations outside JSON.
+You must always respond in valid JSON only (no Markdown, no extra text).
 
 Available tools:
 - getWeather(location: string): Returns the weather for a given location.
@@ -42,19 +42,19 @@ Example JSON sequence:
 
 // const autoPrompting = [
 //   {
-//     role: "developer",
+//     role: "user",
 //     content: `{"type": "START", "content": "User has asked for the weather in Dhaka."}`,
 //   },
 //   {
-//     role: "developer",
+//     role: "user",
 //     content: `{"type": "PLAN", "content": "I will use the getWeather tool to find the weather in Dhaka."}`,
 //   },
 //   {
-//     role: "developer",
+//     role: "user",
 //     content: `{"type": "ACT", "content": {"tool": "getWeather", "args": ["Dhaka"]}}`,
 //   },
 //   {
-//     role: "developer",
+//     role: "user",
 //     content: `{"type": "OBSERVE", "content": "The weather in Dhaka is 15°C."}`,
 //   },
 // ];
@@ -76,11 +76,25 @@ const messages = [
   { role: "user", content: userPrompt },
 ];
 
+// --- Helper: Safe JSON parse ---
+function safeJSON(output) {
+  try {
+    const clean = output.replace(/```json|```/g, "").trim();
+    return JSON.parse(clean);
+  } catch (err) {
+    return null;
+  }
+}
+
+// --- Main Loop ---
 let maxIterations = 10;
 let iteration = 0;
 
 // Handle auto prompting and tool calling
 while (iteration < maxIterations) {
+  iteration++;
+  console.log(`\n🔄 Iteration ${iteration}/${maxIterations}`);
+
   const completion = await client.chat.completions.create({
     model: "gpt-4o-mini",
     messages,
@@ -88,29 +102,50 @@ while (iteration < maxIterations) {
   });
 
   const output = completion.choices[0].message.content;
+  console.log("🔍 LLM Output:", output);
   messages.push({ role: "assistant", content: output });
 
-  // const call = JSON.parse(output);
-  let call;
-  try {
-    call = JSON.parse(output);
-  } catch (err) {
-    console.error("Invalid JSON from model:", output);
-    break;
+  const call = safeJSON(output);
+  if (!call) {
+    console.error("❌ Invalid JSON from model:", output);
+    console.error("🔄 Retrying...");
+    // Retry instead of breaking since the loop is not infinite and we can retry again
+    continue;
+    // break;
   }
 
   if (call.type === "OUTPUT") {
-    console.log("LLM Output:", call.content);
+    console.log("✅ Final Answer:", call.content);
     break;
   } else if (call.type === "ACT") {
-    const toolName = call.content.tool;
-    const args = call.content.args;
-    if (tools[toolName]) {
-      const observation = tools[toolName](...args); // Call the tool
-      const obs = { type: "OBSERVE", content: observation };
-      messages.push({ role: "developer", content: JSON.stringify(obs) });
+    const { tool, args } = call.content;
+    if (tools[tool]) {
+      try {
+        const observation = tools[tool](...args); // Call the tool
+        const obs = { type: "OBSERVE", content: observation };
+        messages.push({ role: "user", content: JSON.stringify(obs) }); // mark as user/tool role. In older API versions this was called "function"
+        console.log(`🔧 Tool ${tool} called with args:`, args);
+      } catch (error) {
+        const errorObs = {
+          type: "OBSERVE",
+          content: `Error: ${error.message}`,
+        };
+        messages.push({ role: "user", content: JSON.stringify(errorObs) });
+        console.error(`❌ Tool ${tool} failed:`, error.message);
+      }
     } else {
-      throw new Error(`Unknown tool: ${toolName}`);
+      const errorObs = {
+        type: "OBSERVE",
+        content: `Unknown tool: ${tool}`,
+      };
+      messages.push({ role: "user", content: JSON.stringify(errorObs) });
+      console.error(`❌ Unknown tool: ${tool}`);
     }
   }
+}
+
+if (iteration >= maxIterations) {
+  console.log(
+    "⚠️ Sorry, Maximum iterations reached. I could not complete the task."
+  );
 }
