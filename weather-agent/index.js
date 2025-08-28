@@ -19,7 +19,7 @@ function getWeather(location = "") {
   return `The weather in ${location} is currently unavailable.`;
 }
 
-// Available tools
+// Tools Map
 const tools = { getWeather };
 
 // --- Prompts ---
@@ -40,37 +40,7 @@ Example JSON sequence:
 {"type": "OUTPUT", "content": "The weather in Kurigram is 10°C."}
 `;
 
-// const autoPrompting = [
-//   {
-//     role: "user",
-//     content: `{"type": "START", "content": "User has asked for the weather in Dhaka."}`,
-//   },
-//   {
-//     role: "user",
-//     content: `{"type": "PLAN", "content": "I will use the getWeather tool to find the weather in Dhaka."}`,
-//   },
-//   {
-//     role: "user",
-//     content: `{"type": "ACT", "content": {"tool": "getWeather", "args": ["Dhaka"]}}`,
-//   },
-//   {
-//     role: "user",
-//     content: `{"type": "OBSERVE", "content": "The weather in Dhaka is 15°C."}`,
-//   },
-// ];
-
-// const completion = await client.chat.completions.create({
-//   model: "gpt-4o-mini",
-//   messages: [
-//     { role: "system", content: systemPrompt },
-//     ...autoPrompting,
-//     { role: "user", content: userPrompt },
-//   ],
-// });
-
-// const output = completion.choices[0].message.content;
-// console.log("LLM Output:", output);
-
+// Combine system prompt and user prompt
 const messages = [
   { role: "system", content: systemPrompt },
   { role: "user", content: userPrompt },
@@ -101,6 +71,7 @@ while (iteration < maxIterations) {
     response_format: { type: "json_object" },
   });
 
+  // Get the LLM output
   const output = completion.choices[0].message.content;
   console.log("🔍 LLM Output:", output);
   messages.push({ role: "assistant", content: output });
@@ -113,6 +84,8 @@ while (iteration < maxIterations) {
     continue;
     // break;
   }
+
+  // console.log(`📤 ${call.type}: ${JSON.stringify(call.content)}`);
 
   if (call.type === "OUTPUT") {
     console.log("✅ Final Answer:", call.content);
@@ -141,6 +114,9 @@ while (iteration < maxIterations) {
       messages.push({ role: "user", content: JSON.stringify(errorObs) });
       console.error(`❌ Unknown tool: ${tool}`);
     }
+  } else {
+    // Just for debugging purposes
+    console.log("Skipping for assistant:", call.type);
   }
 }
 
