@@ -91,14 +91,15 @@ The advanced agents use LangChain.js framework and demonstrate different complex
   - Advanced error handling
 - **Status**: ✅ **Working** (Fixed with simplified approach)
 
-#### 2. **`advanced-simple.js`** - Complex (Simplified LangChain)
+#### 2. **`advanced-simple.js`** - Simple (LangChain Tools Demo)
 
-- **Complexity**: ⭐⭐⭐⭐ (High)
+- **Complexity**: ⭐⭐ (Low)
 - **Features**:
-  - LangChain.js agent with tools
-  - Simplified setup
-  - Memory management
-- **Status**: ✅ **Working** (Fixed with simplified approach)
+  - LangChain.js tools demonstration
+  - Simple pattern matching
+  - Clean, minimal code
+  - Easy to understand
+- **Status**: ✅ **Working** (Simplified approach without AgentExecutor)
 
 #### 3. **`advanced-working.js`** - Medium Complex (Working Solution)
 
@@ -132,7 +133,7 @@ basic.js → medium.js → medium-v2.js → advanced-working.js → web-interfac
 
 - **`advanced-working.js`** - Best for learning and production use
 - **`advanced.js`** - Most complex with full LangChain integration
-- **`advanced-simple.js`** - Simplified version for easier understanding
+- **`advanced-simple.js`** - Perfect for learning LangChain tools (simplified approach)
 - **`web-interface.js`** - For web-based interactions
 
 ## Architecture
@@ -185,6 +186,38 @@ node medium.js "What's the weather in Kurigram?"
 
 ```bash
 node medium-v2.js "What's the weather in Rangpur?"
+```
+
+### Advanced Files - Framework Level
+
+#### advanced-simple.js - LangChain Tools Demo
+
+```bash
+node advanced-simple.js "What's the weather in Dhaka?"
+node advanced-simple.js "What's the weather in Kurigram?"
+```
+
+#### advanced.js - Full LangChain Agent
+
+```bash
+node advanced.js "What's the weather in Dhaka?"
+node advanced.js "Convert 15°C to Fahrenheit"
+node advanced.js "Check weather alerts for Chittagong"
+```
+
+#### advanced-working.js - Production Ready
+
+```bash
+node advanced-working.js "What's the weather in Dhaka?"
+node advanced-working.js "Convert 15°C to Fahrenheit"
+node advanced-working.js "Check weather alerts for Chittagong"
+```
+
+#### web-interface.js - Web Application
+
+```bash
+node web-interface.js
+# Then open http://localhost:3000 in your browser
 ```
 
 ## Example Output
