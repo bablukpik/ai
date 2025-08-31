@@ -26,6 +26,18 @@ This directory contains examples of using LangChain.js for chat applications, de
   - Multiple streaming methods
   - Character tracking
 
+### 🧠 `context-basic.js` - History-Aware Chat with Context Memory
+
+**Complexity**: ⭐⭐⭐⭐ (Advanced)
+
+- **Purpose**: Demonstrates conversation memory and context awareness
+- **Features**:
+  - Persistent chat history across sessions
+  - Context-aware responses
+  - Interactive chat mode
+  - File-based memory storage
+  - Conversation context management
+
 ## 🚀 Quick Start
 
 ### Prerequisites
@@ -55,6 +67,14 @@ node basic.js
 ```bash
 node streaming-basic.js "Tell me a joke"
 node streaming-basic.js "Explain quantum computing"
+```
+
+#### Context-Aware Chat
+
+```bash
+node context-basic.js "Hello, my name is Alice"
+node context-basic.js "What's my name?"
+node context-basic.js interactive
 ```
 
 ## 📚 LangChain.js Core Concepts
@@ -159,14 +179,15 @@ const stream = await chain.stream({ input: "Hello" });
 
 ## 📊 File Comparison
 
-| Feature             | `basic.js`               | `streaming-basic.js`    |
-| ------------------- | ------------------------ | ----------------------- |
-| **Response Type**   | Complete                 | Streaming               |
-| **User Experience** | Wait for full response   | Real-time feedback      |
-| **Complexity**      | Simple                   | Intermediate            |
-| **Chunk Analysis**  | ❌ No                    | ✅ Yes                  |
-| **Performance**     | Higher perceived latency | Lower perceived latency |
-| **Use Case**        | Simple queries           | Interactive chat        |
+| Feature             | `basic.js`               | `streaming-basic.js`    | `context-basic.js`     |
+| ------------------- | ------------------------ | ----------------------- | ---------------------- |
+| **Response Type**   | Complete                 | Streaming               | Complete with Context  |
+| **User Experience** | Wait for full response   | Real-time feedback      | Memory-aware responses |
+| **Complexity**      | Simple                   | Intermediate            | Advanced               |
+| **Chunk Analysis**  | ❌ No                    | ✅ Yes                  | ❌ No                  |
+| **Memory**          | ❌ No                    | ❌ No                   | ✅ Yes                 |
+| **Performance**     | Higher perceived latency | Lower perceived latency | Context-aware latency  |
+| **Use Case**        | Simple queries           | Interactive chat        | Conversational AI      |
 
 ## 🔍 Streaming Chunk Analysis
 
@@ -219,6 +240,59 @@ Chunk 5: " can"
 Chunk 6: " I help"
 Chunk 7: " you today?"
 ```
+
+## 🧠 Context and Memory Management
+
+### **How Context Memory Works**
+
+The `context-basic.js` file demonstrates a complete conversation memory system:
+
+#### **1. Persistent Storage**
+
+```javascript
+// Save history to file
+function saveHistory() {
+  fs.writeFileSync(HISTORY_FILE, JSON.stringify(chatHistory, null, 2));
+}
+
+// Load history from file
+function loadHistory() {
+  const data = fs.readFileSync(HISTORY_FILE, "utf8");
+  chatHistory = JSON.parse(data);
+}
+```
+
+#### **2. Context Building**
+
+```javascript
+function getConversationContext() {
+  const recentMessages = chatHistory.slice(-8); // Last 8 messages
+  return recentMessages.map((msg) => `${msg.role}: ${msg.content}`).join("\n");
+}
+```
+
+#### **3. Memory-Aware Prompts**
+
+```javascript
+const systemPrompt = `You are a helpful AI assistant with access to conversation history. 
+Please respond naturally and maintain context from previous messages.
+
+Previous conversation (last 8 messages):
+${getConversationContext()}
+
+Instructions:
+- Remember names, preferences, and topics discussed
+- Reference previous parts of the conversation when relevant
+- Provide contextual responses that build on what was said before`;
+```
+
+### **Memory Features**
+
+- **Persistent Storage**: Chat history saved to `chat_history.json`
+- **Session Continuity**: History persists between program runs
+- **Context Window**: Last 8 messages used for context
+- **Interactive Mode**: Real-time chat with memory commands
+- **History Management**: View, clear, and inspect conversation history
 
 ## 🛠️ Advanced Usage
 
