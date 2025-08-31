@@ -14,14 +14,14 @@ const chatModel = new ChatOpenAI({
 // Get user input from command line or default
 const userInput = process.argv[2] || "What is LangChain?";
 
-// Direct Model Invocation
+// 1. Direct Model Invocation
 // console.log(await chatModel.invoke(userInput));
 
-// Run the model with the context (Prompt Template + Model)
-const prompt = ChatPromptTemplate.fromMessages([
-  ["system", "You are a world class technical documentation writer."], // System Prompt for context
-  ["user", "{input}"],
-]);
+// 2. Run the model with the context (Prompt Template + Model)
+// const prompt = ChatPromptTemplate.fromMessages([
+//   ["system", "You are a world class technical documentation writer."], // System Prompt for context
+//   ["user", "{input}"],
+// ]);
 
 // const chain = prompt.pipe(chatModel);
 
@@ -31,9 +31,12 @@ const prompt = ChatPromptTemplate.fromMessages([
 //   })
 // );
 
-// Run the model with the context and output parser (Prompt Template + Model + Output Parser)
-const outputParser = new StringOutputParser();
-
+// 3. Run the model with the context and output parser (Prompt Template + Model + Output Parser)
+const prompt = ChatPromptTemplate.fromMessages([
+  ["system", "You are a helpful AI assistant."],
+  ["user", "{input}"],
+]);
+const outputParser = new StringOutputParser(); // Returns just the clean text, no metadata
 const llmChain = prompt.pipe(chatModel).pipe(outputParser);
 
 console.log(
