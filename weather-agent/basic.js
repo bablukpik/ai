@@ -21,7 +21,7 @@ function getWeather(location = "") {
 }
 
 // --- Prompts ---
-const userPrompt = "What's the weather in Dhaka?";
+const userPrompt = process.argv[2] || "What's the weather in Dhaka?";
 
 const systemPrompt = `
 You are a helpful assistant with the following steps of states.
@@ -59,8 +59,8 @@ const completion = await client.chat.completions.create({
   model: "gpt-4o-mini",
   messages: [
     { role: "system", content: systemPrompt },
-    { role: "user", content: userPrompt },
     ...autoPrompting,
+    { role: "user", content: userPrompt },
   ],
 });
 
@@ -69,6 +69,10 @@ const output = completion.choices[0].message.content;
 console.log("LLM Output:", output);
 
 // --- How to run the code ---
+// 1. cd weather-agent
+// 2. npm install openai dotenv
+// 3. Create a .env file and add your OpenAI API key: OPENAI_API_KEY=your_api_key
+// 4. Run the code using the following steps:
 // node basic.js
 // 1. initially put the autoPrompting array empty and then run the code
 // 2. then append the result of step 1 to the autoPrompting array by using the following format and run the code
