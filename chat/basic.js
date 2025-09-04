@@ -46,6 +46,9 @@ console.log(
 );
 
 // --- How to run the code ---
+// cd to the chat folder
+// npm install
+// Set your OPENROUTER_API_KEY in a .env file
 // node basic.js
 // node basic.js "What is artificial intelligence?"
 // node basic.js "Explain machine learning in simple terms"
