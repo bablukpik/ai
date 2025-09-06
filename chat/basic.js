@@ -1,5 +1,9 @@
 import { ChatOpenAI } from "@langchain/openai";
-import { ChatPromptTemplate } from "@langchain/core/prompts";
+import {
+  ChatPromptTemplate,
+  HumanMessagePromptTemplate,
+  SystemMessagePromptTemplate,
+} from "@langchain/core/prompts";
 import { StringOutputParser } from "@langchain/core/output_parsers";
 import "dotenv/config";
 
@@ -15,32 +19,43 @@ const chatModel = new ChatOpenAI({
 const userInput = process.argv[2] || "What is LangChain?";
 
 // 1. Direct Model Invocation
-// console.log(await chatModel.invoke(userInput));
+// console.log(await chatModel.invoke([new HumanMessage(userInput)])); // Verbose way
+console.log(await chatModel.invoke(userInput));
 
 // 2. Run the model with the context (Prompt Template + Model)
-// const prompt = ChatPromptTemplate.fromMessages([
-//   ["system", "You are a world class technical documentation writer."], // System Prompt for context
-//   ["user", "{input}"],
+// const prompt1 = ChatPromptTemplate.fromMessages([
+//   SystemMessagePromptTemplate.fromTemplate(
+//     'You are a specialist in medicine. Suggest medicine names in Bangladesh based on the disease name provided by the user. Provide only the medicine names without any additional information. If no medicine is found, respond with "No medicine found".'
+//   ),
+//   HumanMessagePromptTemplate.fromTemplate("{disease_name}"),
 // ]);
 
-// const chain = prompt.pipe(chatModel);
+const prompt1 = ChatPromptTemplate.fromMessages([
+  ["system", "You are a world class technical documentation writer."], // System Prompt for context
+  ["user", "{input}"],
+]);
 
-// console.log(
-//   await chain.invoke({
-//     input: userInput,
-//   })
-// );
+const chain1 = prompt1.pipe(chatModel);
+
+console.log("----- With Context -----");
+console.log(
+  await chain1.invoke({
+    // input: userInput,
+    disease_name: userInput,
+  })
+);
 
 // 3. Run the model with the context and output parser (Prompt Template + Model + Output Parser)
-const prompt = ChatPromptTemplate.fromMessages([
+const prompt2 = ChatPromptTemplate.fromMessages([
   ["system", "You are a helpful AI assistant."],
   ["user", "{input}"],
 ]);
 const outputParser = new StringOutputParser(); // Returns just the clean text, no metadata
-const llmChain = prompt.pipe(chatModel).pipe(outputParser);
+const chain2 = prompt2.pipe(chatModel).pipe(outputParser);
 
+console.log("----- With Context and Output Parser -----");
 console.log(
-  await llmChain.invoke({
+  await chain2.invoke({
     input: userInput,
   })
 );
@@ -51,4 +66,3 @@ console.log(
 // Set your OPENROUTER_API_KEY in a .env file
 // node basic.js
 // node basic.js "What is artificial intelligence?"
-// node basic.js "Explain machine learning in simple terms"
