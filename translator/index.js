@@ -24,11 +24,11 @@ function getPrompt() {
 Translate the following text into ${targetLanguage}
 Do not explain anything, do not comment. Just provide the translated text.
 
+User query: ${textToBeTranslated}
+
 Example:
 User's input: "Hallo, Tumi kemon acho?"
 Your answer: "Hello, how are you?"
-
-${textToBeTranslated}
 `;
 }
 

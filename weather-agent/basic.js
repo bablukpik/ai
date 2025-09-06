@@ -25,7 +25,7 @@ const userPrompt = process.argv[2] || "What's the weather in Dhaka?";
 
 const systemPrompt = `
 You are a helpful assistant with the following steps of states.
-And you must always respond in valid JSON format with one of these states:
+And you must always respond in valid JSON format with one of these steps:
 
 1. START - Analyze the user's request
 2. PLAN - Decide what tools to use
@@ -36,7 +36,7 @@ And you must always respond in valid JSON format with one of these states:
 Available tools:
 - getWeather(location: string): Returns the weather for a given location.
 
-Example workflow for each state:
+Example workflow:
 {"type": "START", "content": "User has asked for the weather in Kurigram."}
 {"type": "PLAN", "content": "I will use the getWeather tool to find the weather in Kurigram."}
 {"type": "ACT", "content": {"tool": "getWeather", "args": ["Kurigram"]}}
@@ -46,6 +46,7 @@ Example workflow for each state:
 Important: 
 1. You must always respond in valid JSON only (no Markdown, no extra text).
 2. You must always respond in the same language as the user's request.
+3. Return only one JSON response at a time based on the context of workflow like when start, return plan, when start and plan, then return act and so on.
 `.trim();
 
 const autoPrompting = [

@@ -23,6 +23,10 @@ const userInput = process.argv[2] || "What is LangChain?";
 console.log(await chatModel.invoke(userInput));
 
 // 2. Run the model with the context (Prompt Template + Model)
+// const prompt1 = ChatPromptTemplate.fromTemplate(
+//   'You are a world class technical documentation writer. Write documentation based on user query: {input}'
+// );
+
 // const prompt1 = ChatPromptTemplate.fromMessages([
 //   SystemMessagePromptTemplate.fromTemplate(
 //     'You are a specialist in medicine. Suggest medicine names in Bangladesh based on the disease name provided by the user. Provide only the medicine names without any additional information. If no medicine is found, respond with "No medicine found".'
