@@ -1,4 +1,3 @@
-import { ChatOpenAI } from "@langchain/openai";
 import {
   ChatPromptTemplate,
   HumanMessagePromptTemplate,
@@ -6,13 +5,12 @@ import {
 } from "@langchain/core/prompts";
 import { StringOutputParser } from "@langchain/core/output_parsers";
 import "dotenv/config";
+import { ChatOllama } from "@langchain/ollama";
 
-const chatModel = new ChatOpenAI({
-  apiKey: process.env.OPENROUTER_API_KEY,
-  model: "deepseek/deepseek-r1-0528:free",
-  configuration: {
-    baseURL: "https://openrouter.ai/api/v1",
-  },
+const chatModel = new ChatOllama({
+  model: "llama3.2:3b",
+  maxRetries: 2,
+  temperature: 0.3,
 });
 
 // Get user input from command line or default
@@ -64,5 +62,5 @@ console.log(
 // cd to the chat folder
 // npm install
 // Set your OPENROUTER_API_KEY in a .env file
-// node basic.js
+// node basic-ollama.js
 // node basic.js "What is artificial intelligence?"
