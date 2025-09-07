@@ -20,22 +20,27 @@ const prompt = ChatPromptTemplate.fromTemplate(
 // Use StringOutputParser instead
 const outputParser = new StringOutputParser();
 
-const sequence = RunnableSequence.from([prompt, model, outputParser]);
-
-// const responseFromSequence = await sequence.invoke({
-//   gender: 'boys',
-//  religion_name: 'Islam'
+// Single run
+// const chain = prompt.pipe(model).pipe(outputParser);
+// const response = await chain.invoke({
+//   religion_name: "Islam",
+//   gender: "boys",
 // });
-
-// console.log(responseFromSequence);
+// console.log(response);
 
 const inputs = [
   { religion_name: "Islam", gender: "boys" },
   { religion_name: "Christian", gender: "girls" },
 ];
 
-const batch = await sequence.batch(inputs); // will run in parallel for each input
+// Batch run
+// const chain = prompt.pipe(model).pipe(outputParser);
+// const response = await chain.batch(inputs); // will run in parallel for each input
+// console.log(response);
 
+// Or batch run using RunnableSequence
+const sequence = RunnableSequence.from([prompt, model, outputParser]);
+const batch = await sequence.batch(inputs); // will run in parallel for each input
 console.log(batch);
 
 // --- How to run the code ---

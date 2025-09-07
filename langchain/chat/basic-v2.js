@@ -21,7 +21,7 @@ const chain = new ConversationChain({
 
 const response1 = await chain.call({ input: userInput });
 
-console.log(response1.response);
+console.log("LLM Response: ", response1.response);
 
 console.log("-".repeat(50));
 
