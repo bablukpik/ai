@@ -6,6 +6,7 @@ import axios from "axios";
 async function getWeather(city) {
   console.log("Fetching weather for:", city);
   try {
+    // Here is the format doc: https://github.com/chubin/wttr.in#one-line-output
     const res = await axios.get(`https://wttr.in/${city}?format=%C,%t`, {
       responseType: "text",
     });
