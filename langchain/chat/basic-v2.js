@@ -1,35 +1,36 @@
 import { ChatOpenAI } from "@langchain/openai";
-import { ConversationChain } from "langchain/chains";
-import { BufferMemory } from "langchain/memory";
+import readline from "readline";
 import "dotenv/config";
 
-const chatModel = new ChatOpenAI({
-  apiKey: process.env.OPENROUTER_API_KEY,
-  model: "deepseek/deepseek-r1-0528:free",
-  configuration: { baseURL: "https://openrouter.ai/api/v1" },
+// Create a readline interface to read user input
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
 });
 
-// Get user input from command line or default
-const userInput = "Hello, my name is Bablu, I live in Bangladesh";
+// Create a function to call the Langchain API
+async function chatCompletion(text) {
+  const model = new ChatOpenAI({
+    modelName: "gpt-4o-mini",
+    temperature: 0.9,
+    maxTokens: 1000,
+  });
 
-const memory = new BufferMemory({ returnMessages: true });
+  const response = await model.invoke(text);
 
-const chain = new ConversationChain({
-  llm: chatModel,
-  memory,
-});
+  console.log("AI:", response.content);
+}
 
-const response1 = await chain.call({ input: userInput });
+// Create a function to ask for user input
+function getPrompt() {
+  rl.question("Enter your prompt: ", (input) => {
+    if (input.toUpperCase() === "EXIT") {
+      rl.close();
+    } else {
+      chatCompletion(input).then(() => getPrompt()); // Call getPrompt again to ask for the next input
+    }
+  });
+}
 
-console.log("LLM Response: ", response1.response);
-
-console.log("-".repeat(50));
-
-// Only works for a single run session
-const response2 = await chain.call({
-  input: "What's my name and where do I live?",
-});
-console.log(response2.response);
-
-// --- How to run the code ---
-// node basic-v2.js
+// Start the interactive prompt or prompt loop
+getPrompt();
