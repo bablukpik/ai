@@ -52,3 +52,8 @@ try {
 } catch (error) {
   console.error("Error:", error.message);
 }
+
+// How to run this example
+// 1. cd to the langchain/chat folder
+// 2. install dependencies: npm i
+// 3. run the file: node batching-with-zod.js

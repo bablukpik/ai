@@ -44,3 +44,8 @@ const inputs = [
 
 const batch = await sequence.batch(inputs);
 console.log(JSON.stringify(batch, null, 2));
+
+// How to run this example
+// 1. cd to the langchain/chat folder
+// 2. install dependencies: npm i
+// 3. run the file: node batching-basic-v2.js

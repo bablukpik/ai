@@ -43,5 +43,7 @@ const sequence = RunnableSequence.from([prompt, model, outputParser]);
 const batch = await sequence.batch(inputs); // will run in parallel for each input
 console.log(batch);
 
-// --- How to run the code ---
-// node batching-basic.js
+// How to run this example
+// 1. cd to the langchain/chat folder
+// 2. install dependencies: npm i
+// 3. run the file: node batching-basic.js

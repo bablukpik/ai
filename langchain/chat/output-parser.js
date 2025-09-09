@@ -106,3 +106,8 @@ async function formatWithZodStructuredParser() {
 // const response = await formatWithStructuredParser();
 // const response = await formatWithZodStructuredParser();
 // console.log(response);
+
+// How to run this example
+// 1. cd to the langchain/chat folder
+// 2. install dependencies: npm i
+// 3. run the file: node output-parser.js

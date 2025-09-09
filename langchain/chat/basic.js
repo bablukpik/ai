@@ -1,6 +1,7 @@
 import { ChatOpenAI } from "@langchain/openai";
 import "dotenv/config";
 
+// Initialize the model with configuration
 const chatModel = new ChatOpenAI({
   apiKey: process.env.OPENROUTER_API_KEY,
   model: "deepseek/deepseek-r1-0528:free",

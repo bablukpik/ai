@@ -1,66 +1,46 @@
-import {
-  ChatPromptTemplate,
-  HumanMessagePromptTemplate,
-  SystemMessagePromptTemplate,
-} from "@langchain/core/prompts";
-import { StringOutputParser } from "@langchain/core/output_parsers";
-import "dotenv/config";
 import { ChatOllama } from "@langchain/ollama";
+import "dotenv/config";
 
-const chatModel = new ChatOllama({
+// Initialize the model with configuration
+const model = new ChatOllama({
   model: "llama3.2:3b",
-  maxRetries: 2,
-  temperature: 0.3,
+  temperature: 0.7,
+  maxTokens: 1024,
+  maxRetries: 3,
 });
 
 // Get user input from command line or default
-const userInput = process.argv[2] || "What is LangChain?";
+const userInput = process.argv[2] || "Tell me a joke?";
 
 // 1. Direct Model Invocation
-// console.log(await chatModel.invoke([new HumanMessage(userInput)])); // Verbose way
-console.log(await chatModel.invoke(userInput));
+// console.log(await model.invoke([new HumanMessage(userInput)])); // Verbose way
+// OR
+// console.log(await model.invoke(userInput));
 
-// 2. Run the model with the context (Prompt Template + Model)
-// const prompt1 = ChatPromptTemplate.fromMessages([
-//   SystemMessagePromptTemplate.fromTemplate(
-//     'You are a specialist in medicine. Suggest medicine names in Bangladesh based on the disease name provided by the user. Provide only the medicine names without any additional information. If no medicine is found, respond with "No medicine found".'
-//   ),
-//   HumanMessagePromptTemplate.fromTemplate("{disease_name}"),
-// ]);
+// 2. Run the model with the context (Prompt + Model)
+// Default message format
+// const prompt = [
+//   [
+//     "system",
+//     "You are a technical comedian. Tell a joke based on user query.",
+//   ], // system context or prompt which enforces a specific behavior of the model
+//   ["user", userInput],
+// ];
 
-const prompt1 = ChatPromptTemplate.fromMessages([
-  ["system", "You are a world class technical documentation writer."], // System Prompt for context
-  ["user", "{input}"],
-]);
+// OpenAI message format
+const prompt = [
+  {
+    role: "system",
+    content: "You are a technical comedian. Tell a joke based on user query.",
+  }, // system context or prompt which enforces a specific behavior of the model
+  { role: "user", content: userInput },
+];
 
-const chain1 = prompt1.pipe(chatModel);
+console.log(await model.invoke(prompt));
 
-console.log("----- With Context -----");
-console.log(
-  await chain1.invoke({
-    input: userInput,
-    // disease_name: userInput,
-  })
-);
-
-// 3. Run the model with the context and output parser (Prompt Template + Model + Output Parser)
-const prompt2 = ChatPromptTemplate.fromMessages([
-  ["system", "You are a helpful AI assistant. Answer the question concisely."],
-  ["user", "{input}"],
-]);
-const outputParser = new StringOutputParser(); // Returns just the clean text, no metadata
-const chain2 = prompt2.pipe(chatModel).pipe(outputParser);
-
-console.log("----- With Context and Output Parser -----");
-console.log(
-  await chain2.invoke({
-    input: userInput,
-  })
-);
-
-// --- How to run the code ---
-// cd to the chat folder
-// npm install
-// Set your OPENROUTER_API_KEY in a .env file
-// node basic-ollama.js
+// How to run this example
+// 1. cd to the langchain/chat folder
+// 2. install dependencies: npm i
+// 3. run the file:
+// node basic.js
 // node basic.js "What is artificial intelligence?"

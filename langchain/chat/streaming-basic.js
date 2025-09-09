@@ -86,6 +86,9 @@ try {
   console.error("Error:", error.message);
 }
 
-// --- How to run the code ---
+// How to run this example
+// 1. cd to the langchain/chat folder
+// 2. install dependencies: npm i
+// 3. run the file:
 // node streaming-basic.js
 // node streaming-basic.js "Tell me a joke"
