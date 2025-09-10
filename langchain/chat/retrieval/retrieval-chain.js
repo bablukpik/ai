@@ -23,7 +23,7 @@ const prompt = ChatPromptTemplate.fromTemplate(
   Question: {input}`
 );
 
-// Create Chain
+// Create the chain to combine documents
 const chain = await createStuffDocumentsChain({
   llm: model,
   prompt,
@@ -70,7 +70,8 @@ const vectorStore = await MemoryVectorStore.fromDocuments(
 // Create a retriever from vector store
 const retriever = vectorStore.asRetriever({ k: 3 });
 
-// Create a retrieval chain
+// Create a retrieval chain to tie everything together (prompt, model, chain, retriever)
+// The combineDocsChain combines retrieved documents and assign to context property in the prompt
 const retrievalChain = await createRetrievalChain({
   combineDocsChain: chain,
   retriever,
@@ -78,6 +79,7 @@ const retrievalChain = await createRetrievalChain({
 
 const response = await retrievalChain.invoke({
   input: "What is ADK?",
+  // context: something, // no need to pass context, it's handled by the retrieval chain
 });
 
 console.log(response);
