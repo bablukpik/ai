@@ -13,10 +13,12 @@
   "dependencies": {
     "@langchain/community": "^0.3.55",
     "@langchain/core": "^0.3.75",
+    "@langchain/langgraph": "^0.4.9",
     "@langchain/ollama": "^0.2.4",
     "@langchain/openai": "^0.6.7",
     "cheerio": "^1.1.2",
     "dotenv": "^17.2.1",
-    "langchain": "^0.3.33"
+    "langchain": "^0.3.33",
+    "langsmith": "^0.3.67"
   }
 }

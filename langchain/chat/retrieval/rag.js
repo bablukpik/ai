@@ -59,11 +59,11 @@ async function getHistoryAwareRetriever() {
   // generating a search query based on both the user input and
   // the chat history
   const historyAwarePrompt = ChatPromptTemplate.fromMessages([
+    ["placeholder", "{chat_history}"],
     [
       "system",
-      "Given the conversation, generate a search query to look up in order to get information relevant to the conversation",
+      "Given the above conversation, generate a search query to look up in order to get information relevant to the conversation",
     ],
-    ["placeholder", "{chat_history}"],
     ["user", "{input}"],
   ]);
 
