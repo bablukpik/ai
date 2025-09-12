@@ -4,6 +4,10 @@
 
 ### Diagram
 
+![LangChain RAG Workflow](./langchain-rag-workflow.png "LangChain RAG Workflow")
+
+**Another Simple Diagram:**
+
 ```mermaid
 flowchart TD
 
