@@ -31,5 +31,7 @@ const response2 = await chain.call({
 });
 console.log(response2.response);
 
-// --- How to run the code ---
-// node context-buffer-memory.js
+// How to run this example
+// 1. cd to the langchain/chat folder
+// 2. install dependencies: npm i
+// 3. run the file: node chat-history/context-buffer-memory.js

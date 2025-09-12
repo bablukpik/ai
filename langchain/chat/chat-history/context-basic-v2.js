@@ -66,5 +66,8 @@ while (true) {
 
 rl.close();
 
-// --- How to run the code ---
-// node history-aware/context-basic-v2.js
+// How to run this example
+// 1. cd to the langchain/chat folder
+// 2. install dependencies: npm i
+// 3. run the file: node chat-history/context-basic-v2.js
+// 4. Type messages and see how memory works. Type 'exit' to quit.

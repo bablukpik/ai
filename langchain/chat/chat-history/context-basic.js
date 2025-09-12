@@ -38,6 +38,9 @@ const chatResult = await chatModel.invoke([
 console.log("🤖 Response:");
 console.log(chatResult.content);
 
-// --- How to run the code ---
-// node context-basic.js "What's my name?"
-// node context-basic.js "Tell me about our conversation"
+// How to run this example
+// 1. cd to the langchain/chat folder
+// 2. install dependencies: npm i
+// 3. run the file:
+// node chat-history/context-basic.js "What's my name?"
+// node chat-history/context-basic.js "Tell me about our conversation"

@@ -203,8 +203,11 @@ async function main() {
 // Run the main function
 main().catch(console.error);
 
-// --- How to run the code ---
-// node context-medium.js "Hello, my name is Alice"
-// node context-medium.js "What's my name?"
-// node context-medium.js "Tell me about our conversation"
-// node context-medium.js interactive
+// How to run this example
+// 1. cd to the langchain/chat folder
+// 2. install dependencies: npm i
+// 3. run the file:
+// node chat-history/context-medium.js "Hello, my name is Alice"
+// node chat-history/context-medium.js "What's my name?"
+// node chat-history/context-medium.js "Tell me about our conversation"
+// node chat-history/context-medium.js interactive
