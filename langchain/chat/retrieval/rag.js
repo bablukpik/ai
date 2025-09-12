@@ -10,6 +10,8 @@ import { HumanMessage, AIMessage } from "@langchain/core/messages";
 import "dotenv/config";
 import readline from "readline";
 
+const WEBPAGE = "https://google.github.io/adk-docs/";
+
 // Create a readline interface to read user input
 const rl = readline.createInterface({
   input: process.stdin,
@@ -24,10 +26,29 @@ const model = new ChatOpenAI({
   maxRetries: 3,
 });
 
+function getResultGenPrompt(isChatHistory = false) {
+  // Define the prompt for the final chain
+  const resultGenPrompt = ChatPromptTemplate.fromMessages([
+    [
+      "system",
+      "Answer the user's questions based on the following context: {context}.",
+    ],
+    ...(isChatHistory ? [["placeholder", "{chat_history}"]] : []),
+    ["user", "{input}"],
+  ]);
+  return resultGenPrompt;
+}
+
+// Fake chat history (in real scenarios, this would come from database or memory)
+const chatHistory = [
+  new HumanMessage("What does ADK stand for?"),
+  new AIMessage("Agent Development Kit"),
+];
+
 // Function to scrape, split, embed and save to vector store
-async function saveToVectorStore() {
+async function saveToVectorStore(webPage = "") {
   // Use Cheerio to scrape content from webpage and create documents
-  const loader = new CheerioWebBaseLoader("https://google.github.io/adk-docs/");
+  const loader = new CheerioWebBaseLoader(webPage);
   const docs = await loader.load();
 
   // Text Splitter
@@ -50,11 +71,7 @@ async function saveToVectorStore() {
   return vectorStore;
 }
 
-async function getHistoryAwareRetriever() {
-  // Create a retriever from vector store
-  const vectorStore = await saveToVectorStore();
-  const retriever = vectorStore.asRetriever({ k: 2 });
-
+async function getHistoryAwareRetriever(retriever, model) {
   // Create a HistoryAwareRetriever which will be responsible for
   // generating a search query based on both the user input and
   // the chat history
@@ -79,48 +96,58 @@ async function getHistoryAwareRetriever() {
   return historyAwareRetriever;
 }
 
+async function getStuffDocsChain(prompt, model) {
+  // Since we need to pass the docs from the retriever, we will use
+  // the createStuffDocumentsChain
+  const chain = await createStuffDocumentsChain({
+    prompt,
+    llm: model,
+  });
+
+  return chain;
+}
+
+async function getRetrievalChain(retriever, combineDocsChain) {
+  // Create the conversation chain, which will combine the retrieverChain
+  // and combineStuffChain in order to get an answer
+  const retrievalChain = await createRetrievalChain({
+    combineDocsChain,
+    retriever,
+  });
+
+  return retrievalChain;
+}
+
 // Generate answer from vector store with chat history
 async function chatCompletion(userInput) {
-  // Fake chat history
-  const chatHistory = [
-    new HumanMessage("What does ADK stand for?"),
-    new AIMessage("Agent Development Kit"),
-  ];
+  // Create a retriever from vector store
+  const vectorStore = await saveToVectorStore(WEBPAGE);
+  const retriever = vectorStore.asRetriever({ k: 2 });
 
   // A retriever where either the input or the reformulated search query with relevant retrieved (if chat history exists) docs is passed
-  const historyAwareRetriever = await getHistoryAwareRetriever();
+  const historyAwareRetriever = await getHistoryAwareRetriever(
+    retriever,
+    model
+  );
 
   // returns only the documents
   // const response = await historyAwareRetriever.invoke({
   //   chat_history: chatHistory,
-  //   input: "What is it?",
+  //   input: userInput || "What is it?",
   // });
 
   // console.log(response);
 
-  // Define the prompt for the final chain
-  const prompt = ChatPromptTemplate.fromMessages([
-    [
-      "system",
-      "Answer the user's questions based on the following context: {context}.",
-    ],
-    ["placeholder", "{chat_history}"],
-    ["user", "{input}"],
-  ]);
+  const resultGenPrompt = getResultGenPrompt(
+    chatHistory && chatHistory.length > 0
+  );
 
-  // Since we need to pass the docs from the retriever, we will use
-  // the createStuffDocumentsChain
-  const chain = await createStuffDocumentsChain({
-    llm: model,
-    prompt,
-  });
-
-  // Create the conversation chain, which will combine the retrieverChain
-  // and combineStuffChain in order to get an answer
-  const retrievalChain = await createRetrievalChain({
-    combineDocsChain: chain,
-    retriever: historyAwareRetriever,
-  });
+  // Create a chain to combine the documents returned by the retriever
+  const combineDocsChain = await getStuffDocsChain(resultGenPrompt, model);
+  const retrievalChain = await getRetrievalChain(
+    historyAwareRetriever,
+    combineDocsChain
+  );
 
   const response = await retrievalChain.invoke({
     chat_history: chatHistory,
