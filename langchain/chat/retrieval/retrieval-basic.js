@@ -48,8 +48,8 @@ const documentB = new Document({
 
 // Chain to combine documents
 const chain = await createStuffDocumentsChain({
-  llm: model,
   prompt,
+  llm: model,
 });
 
 const splitDocs = [documentA, documentB];

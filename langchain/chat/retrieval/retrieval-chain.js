@@ -68,7 +68,7 @@ const vectorStore = await MemoryVectorStore.fromDocuments(
 );
 
 // Create a retriever from vector store
-const retriever = vectorStore.asRetriever({ k: 3 });
+const retriever = vectorStore.asRetriever({ k: 2 });
 
 // Create a retrieval chain to tie everything together (prompt, model, chain, retriever)
 // The combineDocsChain combines retrieved documents and assign to context property in the prompt

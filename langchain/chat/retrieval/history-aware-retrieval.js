@@ -17,8 +17,8 @@ async function createVectorStore() {
 
   // Text Splitter
   const splitter = new RecursiveCharacterTextSplitter({
-    chunkSize: 100,
-    chunkOverlap: 20,
+    chunkSize: 512,
+    chunkOverlap: 100,
   });
   const splitDocs = await splitter.splitDocuments(docs);
 
@@ -64,19 +64,19 @@ async function createChain(vectorStore) {
 
   // Create the chain to combine documents
   const chain = await createStuffDocumentsChain({
-    llm: model,
     prompt,
+    llm: model,
   });
 
   // Create a retriever which is responsible for fetching relevant documents from the vector store
   const retriever = vectorStore.asRetriever({ k: 2 });
 
   const finalPrompt = ChatPromptTemplate.fromMessages([
-    ["placeholder", "{chat_history}"],
     [
       "system",
-      "Given the above conversation, generate a search query to look up in order to get information relevant to the conversation",
+      "Given the conversation below, generate a search query to look up in order to get information relevant to the conversation",
     ],
+    ["placeholder", "{chat_history}"],
     ["user", "{input}"],
   ]);
 

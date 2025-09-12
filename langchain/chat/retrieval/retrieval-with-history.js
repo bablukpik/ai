@@ -6,9 +6,6 @@ import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 import { OpenAIEmbeddings } from "@langchain/openai";
 import { MemoryVectorStore } from "langchain/vectorstores/memory";
 import { createRetrievalChain } from "langchain/chains/retrieval";
-import { createHistoryAwareRetriever } from "langchain/chains/history_aware_retriever";
-import { MessagesPlaceholder } from "@langchain/core/prompts";
-import { HumanMessage, AIMessage } from "@langchain/core/messages";
 import "dotenv/config";
 
 // Load data and create vector store
