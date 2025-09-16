@@ -40,7 +40,7 @@ console.log(await model.invoke(prompt));
 
 // How to run this example
 // 1. cd to the langchain/chat folder
-// 2. install dependencies: npm i
+// 2. install dependencies: npm i or npm i --legacy-peer-deps
 // 3. run the file:
-// node basic.js
-// node basic.js "What is artificial intelligence?"
+// node basic-ollama.js
+// node basic-ollama.js "What is artificial intelligence?"
