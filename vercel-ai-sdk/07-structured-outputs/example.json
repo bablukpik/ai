@@ -1,0 +1,19 @@
+{
+  "recipe": {
+    "name": "Chocolate Cake",
+    "ingredients": [
+      {
+        "name": "flour",
+        "amount": "2 cups"
+      },
+      {
+        "name": "sugar",
+        "amount": "2 cups"
+      }
+    ],
+    "steps": [
+      "Preheat the oven to 350 degrees F.",
+      "Mix the flour, sugar, cocoa powder, baking powder, baking soda, and salt in a large bowl."
+    ]
+  }
+}
