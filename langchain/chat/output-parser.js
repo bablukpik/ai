@@ -10,24 +10,28 @@ import "dotenv/config";
 
 // Instantiate the model
 const model = new ChatOpenAI({
-  modelName: "gpt-4o-mini",
+  apiKey: process.env.OPENROUTER_API_KEY,
+  model: "deepseek/deepseek-r1-0528:free",
+  configuration: {
+    baseURL: "https://openrouter.ai/api/v1",
+  },
   temperature: 0.7,
   maxTokens: 1000,
-  maxRetries: 3,
+  maxRetries: 2,
 });
 
 const prompt = ChatPromptTemplate.fromMessages([
-  ["system", "You are a helpful AI assistant. Answer the question concisely."],
+  ["system", "You are a technical comedian. Tell a joke based on user query."],
   ["user", "{input}"],
 ]);
 
 // Returns just the clean text, no metadata
-const outputParser = new StringOutputParser();
-const chain = prompt.pipe(chatModel).pipe(outputParser);
+// const outputParser = new StringOutputParser();
+const chain = prompt.pipe(model)
 
 // Invoke the chain with input variables (Prompt Template + Model + Output Parser)
 const response = await chain.invoke({
-  input: "What is the capital of Bangladesh?",
+  input: "Tell me a joke about fox",
 });
 
 console.log(response);

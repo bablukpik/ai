@@ -1,4 +1,4 @@
-# AI Tutorials Monorepo
+# AI Tutorials
 
 A collection of small, runnable examples across multiple AI frameworks. Each folder is self-contained. This README shows minimal setup and run commands for each.
 
