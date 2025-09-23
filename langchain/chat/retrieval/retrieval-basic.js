@@ -12,6 +12,7 @@ const model = new ChatOpenAI({
   maxRetries: 3,
 });
 
+//-------------Example with hardcoded context------------------
 // Create prompt with hardcoded context
 // const prompt = ChatPromptTemplate.fromTemplate(
 //   `Answer the user's question from the following context.

@@ -8,7 +8,6 @@ import { MemoryVectorStore } from "langchain/vectorstores/memory";
 import { createRetrievalChain } from "langchain/chains/retrieval";
 import "dotenv/config";
 
-// Instantiate Model
 const model = new ChatOpenAI({
   modelName: "gpt-4o-mini",
   temperature: 0.7,
@@ -16,7 +15,6 @@ const model = new ChatOpenAI({
   maxRetries: 3,
 });
 
-// Create prompt
 const prompt = ChatPromptTemplate.fromTemplate(
   `Answer the user's question from the following context. 
   Context: {context}
@@ -44,34 +42,39 @@ const docs = await loader.load();
 
 // console.log(response);
 
-// ----------Example with splitting, embeddings, vector store, retriever and retrieval chain----------
+// --Example with splitting, embeddings, vector store, retriever and retrieval chain--
+// Instead of passing all the documents to the model we'll pass the most relevant documents
+
+// Note: Adjust chunkSize and chunkOverlap according to your document type
+// Short and FAQ-like: chunkSize up to 500–700, and chunkOverlap 50–100
+// Research papers / legal docs: chunkSize up to 1500–2000, and chunkOverlap 150–300
+// Overlap should be 10–20% of chunkSize
 
 // Text Splitter
 const splitter = new RecursiveCharacterTextSplitter({
-  chunkSize: 512,
-  chunkOverlap: 100,
+  chunkSize: 1000, // ~200–250 tokens
+  chunkOverlap: 150, // ~30 tokens, keeps context flow
 });
 
-// Split the documents into smaller chunks (Transform one doc into multiple docs)
+// Split into smaller chunks
 const splitDocs = await splitter.splitDocuments(docs);
 // console.log(splitDocs);
 
-// Instantiate Embeddings function to convert text into vectors in order to get the most relevant documents
-// Instead of passing all the documents (docs or splitDocs) to the model we'll pass the most relevant documents to our question retrieved by the retriever
+// Create embeddings
 const embeddings = new OpenAIEmbeddings({ model: "text-embedding-3-small" });
 
-// Save documents and their embeddings to the vector store and return the vector store instance
-// In-memory vector store for demo purpose
+// Vector Store (in-memory)
+// Save documents and their embeddings to the vector store and return the store instance
 const vectorStore = await MemoryVectorStore.fromDocuments(
   splitDocs,
   embeddings
 );
 
-// Create a retriever from vector store
+// Create a retriever from vector store which will retrieve the most relevant documents at most k documents
 const retriever = vectorStore.asRetriever({ k: 2 });
 
 // Create a retrieval chain to tie everything together (prompt, model, chain, retriever)
-// The combineDocsChain combines retrieved documents and assign to context property in the prompt
+// The combineDocsChain combines retrieved documents and assign to context property
 const retrievalChain = await createRetrievalChain({
   combineDocsChain: chain,
   retriever,

@@ -4,7 +4,7 @@
 
 ### Diagram
 
-![LangChain RAG Workflow](./langchain-rag-workflow.png "LangChain RAG Workflow")
+![RAG Architecture](./rag-architecture.png "RAG Architecture")
 
 **Another Simple Diagram:**
 
