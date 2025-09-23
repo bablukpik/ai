@@ -3,24 +3,22 @@ import readline from "readline";
 import "dotenv/config";
 
 const chatModel = new ChatOpenAI({
-  apiKey: process.env.OPENROUTER_API_KEY,
-  model: "deepseek/deepseek-r1-0528:free",
-  configuration: { baseURL: "https://openrouter.ai/api/v1" },
+  apiKey: process.env.GROQ_API_KEY,
+  model: "llama-3.3-70b-versatile",
+  configuration: { baseURL: "https://api.groq.com/openai/v1" },
 });
 
 // Simple in-memory chat history (like BufferMemory but manual)
 let chatHistory = [];
 
-// Create readline interface
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
 });
 
-// Function to chat with memory
 async function chatWithMemory(input) {
   try {
-    console.log("📚 Current Memory Messages:", chatHistory.length);
+    console.log("Current Memory Messages:", chatHistory.length);
 
     // Prepare messages: system + history + current input
     const messages = [
@@ -32,39 +30,38 @@ async function chatWithMemory(input) {
       { role: "user", content: input },
     ];
 
-    // Get response from model
     const response = await chatModel.invoke(messages);
 
-    // Save the conversation to memory (like BufferMemory)
-    chatHistory.push({ role: "user", content: input });
-    chatHistory.push({ role: "assistant", content: response.content });
+    // AI response
+    const aiReply = response.content;
 
-    return response.content;
+    // Update history
+    chatHistory.push({ role: "user", content: input });
+    chatHistory.push({ role: "assistant", content: aiReply });
+
+    return aiReply;
   } catch (error) {
-    console.error("❌ Error:", error.message);
+    console.error("Error:", error.message);
     return null;
   }
 }
 
-// Interactive loop
-while (true) {
-  const userInput = await new Promise((resolve) => {
-    rl.question("👤 You: ", resolve);
+// Interactive Chat Loop
+function getPrompt() {
+  rl.question("Enter your prompt: ", (input) => {
+    if (input.toUpperCase() === "EXIT") {
+      rl.close();
+    } else {
+      chatWithMemory(input).then((reply) => {
+        console.log("AI:", reply);
+        // Call getPrompt again to ask for the next input
+        getPrompt();
+      });
+    }
   });
-
-  if (userInput.toLowerCase() === "exit") {
-    console.log("👋 Exited!");
-    break;
-  }
-
-  const response = await chatWithMemory(userInput);
-  if (response) {
-    console.log("🤖 AI:", response);
-  }
-  console.log("-".repeat(30));
 }
 
-rl.close();
+getPrompt();
 
 // How to run this example
 // 1. cd to the langchain/chat folder
